@@ -1,0 +1,7 @@
+name: RensaiAgentPlugin
+version: 1.0.0
+main: dev.rensai.agent.paper.RensaiAgentPlugin
+description: An official agent plugin for Rensai
+author: zrdzn
+website: https://rensai.dev
+api-version: '26.1.2'
