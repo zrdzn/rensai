@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package rensai.grpc;
+
+option java_package = "dev.rensai.grpc";
+option java_multiple_files = true;
+
+service IngestionService {
+  rpc SendGenericEvent (GenericEventRequest) returns (EventResponse);
+}
+
+message GenericEventRequest {
+  string event_name = 1;
+  string game_source = 2;
+  int64 timestamp = 3;
+  map<string, string> event_data = 4;
+}
+
+message EventResponse {
+  bool success = 1;
+}
