@@ -12,6 +12,7 @@
     <artifactId>rensai-agents</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>rensai-agent-common</module>
         <module>rensai-agent-paper</module>
     </modules>
 </project>

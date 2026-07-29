@@ -13,7 +13,6 @@
         <module>rensai-ingestion</module>
         <module>rensai-orchestrator</module>
         <module>rensai-integration</module>
-        <module>rensai-integration</module>
         <module>rensai-api-gateway</module>
         <module>rensai-agents</module>
     </modules>
@@ -23,4 +22,33 @@
         <maven.compiler.target>25</maven.compiler.target>
         <spring.boot.version>3.4.0</spring.boot.version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.43.0</version>
+                <configuration>
+                    <java>
+                        <includes>
+                            <include>src/main/java/**/*.java</include>
+                            <include>src/test/java/**/*.java</include>
+                        </includes>
+                        <googleJavaFormat>
+                            <version>1.28.0</version>
+                            <style>GOOGLE</style>
+                        </googleJavaFormat>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
