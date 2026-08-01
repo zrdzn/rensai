@@ -24,14 +24,14 @@ public class ItemMetaMapper implements Mapper<ItemMeta> {
     // 1. display_name
     Component displayName = itemMeta.displayName();
     if (itemMeta.hasDisplayName() && displayName != null) {
-      properties.put("display_name", SERIALIZER.serialize(displayName));
+      properties.put(MapperConstants.DISPLAY_NAME_KEY, SERIALIZER.serialize(displayName));
     }
 
     // 2. lore
     List<Component> lore = itemMeta.lore();
     if (itemMeta.hasLore() && lore != null) {
       String plainLore = lore.stream().map(SERIALIZER::serialize).collect(Collectors.joining("\n"));
-      properties.put("lore", plainLore);
+      properties.put(MapperConstants.LORE_KEY, plainLore);
     }
 
     // 3. enchants

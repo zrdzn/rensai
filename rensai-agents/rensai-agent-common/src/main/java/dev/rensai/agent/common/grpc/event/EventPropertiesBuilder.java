@@ -1,6 +1,7 @@
 package dev.rensai.agent.common.grpc.event;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EventPropertiesBuilder {
@@ -15,7 +16,12 @@ public class EventPropertiesBuilder {
     return this;
   }
 
-  public EventPropertiesBuilder put(String key, String value) {
+  public EventPropertiesBuilder putList(String key, List<?> list) {
+    this.properties.put(key, list);
+    return this;
+  }
+
+  public EventPropertiesBuilder putString(String key, String value) {
     properties.put(key, value);
     return this;
   }

@@ -1,5 +1,6 @@
 package dev.rensai.agent.paper.mapper;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -14,10 +15,18 @@ public class ItemStackMapper implements Mapper<ItemStack> {
 
   @Override
   public Map<String, Object> map(ItemStack itemStack) {
+    if (itemStack == null) {
+      return new HashMap<>();
+    }
+
     return Map.of(
-        "item_meta", itemMetaMapper.map(itemStack.getItemMeta()),
-        "type", itemStack.getType().name(),
-        "max_stack_size", itemStack.getMaxStackSize(),
-        "amount", itemStack.getAmount());
+        MapperConstants.ITEM_META_KEY,
+        itemMetaMapper.map(itemStack.getItemMeta()),
+        MapperConstants.TYPE_KEY,
+        itemStack.getType().name(),
+        "max_stack_size",
+        itemStack.getMaxStackSize(),
+        MapperConstants.AMOUNT_KEY,
+        itemStack.getAmount());
   }
 }
