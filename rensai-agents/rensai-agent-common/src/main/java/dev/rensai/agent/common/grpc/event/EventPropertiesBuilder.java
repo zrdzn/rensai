@@ -10,10 +10,8 @@ public class EventPropertiesBuilder {
     this.properties = new HashMap<>();
   }
 
-  public EventPropertiesBuilder putMap(String key, Map<String, Object> mappedProperties) {
-    if (mappedProperties != null) {
-      this.properties.putAll(mappedProperties);
-    }
+  public EventPropertiesBuilder putMap(String key, Map<String, ?> nestedMap) {
+    this.properties.put(key, nestedMap);
     return this;
   }
 
