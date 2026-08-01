@@ -1,11 +1,8 @@
 package dev.rensai.agent.paper.listener;
 
 import dev.rensai.agent.common.grpc.GrpcClient;
+import dev.rensai.agent.common.grpc.event.EventProperties;
 import dev.rensai.agent.paper.PaperGameEvent;
-import java.util.HashMap;
-import java.util.Map;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -21,22 +18,16 @@ public class BlockListener extends AbstractAgentListener {
   public void onBlockBreak(BlockBreakEvent event) {
     handleEvent(
         event,
-        e -> {
-          Player player = event.getPlayer();
-          Block block = event.getBlock();
+        () -> {
+          EventProperties properties =
+              propertyBuilder()
+                  .putMap("block", mappers.mapBlock(event.getBlock()))
+                  .putMap("player", mappers.mapPlayer(event.getPlayer()))
+                  .put("exp_to_drop", String.valueOf(event.getExpToDrop()))
+                  .put("is_drop_items", String.valueOf(event.isDropItems()))
+                  .build();
 
-          Map<String, String> properties = new HashMap<>();
-          properties.put("player_uuid", player.getUniqueId().toString());
-          properties.put("player_name", player.getName());
-          properties.put("block_type", block.getType().name());
-          properties.put("world_name", block.getWorld().getName());
-          properties.put("block_x", String.valueOf(block.getX()));
-          properties.put("block_y", String.valueOf(block.getY()));
-          properties.put("block_z", String.valueOf(block.getZ()));
-          properties.put("exp_to_drop", String.valueOf(event.getExpToDrop()));
-          properties.put("is_drop_items", String.valueOf(event.isDropItems()));
-
-          return new PaperGameEvent(e.getEventName(), properties);
+          return new PaperGameEvent(event.getEventName(), properties);
         });
   }
 }

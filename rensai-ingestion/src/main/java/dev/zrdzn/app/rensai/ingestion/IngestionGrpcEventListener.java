@@ -16,7 +16,10 @@ public class IngestionGrpcEventListener extends IngestionServiceGrpc.IngestionSe
     EventResponse response = EventResponse.newBuilder().setSuccess(true).build();
     LOGGER.error("Received request: {}, {}", request.getEventName(), request.getGameSource());
     LOGGER.error("Data:");
-    request.getEventDataMap().forEach((k, v) -> LOGGER.error("Key: {}, Value: {}", k, v));
+    request
+        .getProperties()
+        .getFieldsMap()
+        .forEach((k, v) -> LOGGER.error("Key: {}, Value: {}", k, v));
     responseObserver.onNext(response);
     responseObserver.onCompleted();
   }

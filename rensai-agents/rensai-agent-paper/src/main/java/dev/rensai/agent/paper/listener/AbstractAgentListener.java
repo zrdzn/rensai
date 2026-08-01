@@ -1,10 +1,12 @@
 package dev.rensai.agent.paper.listener;
 
-import dev.rensai.agent.common.grpc.EventProtoConverter;
-import dev.rensai.agent.common.grpc.GameEvent;
 import dev.rensai.agent.common.grpc.GrpcClient;
+import dev.rensai.agent.common.grpc.event.EventPropertiesBuilder;
+import dev.rensai.agent.common.grpc.event.EventProtoConverter;
+import dev.rensai.agent.common.grpc.event.GameEvent;
+import dev.rensai.agent.paper.mapper.MapperRegistry;
 import dev.rensai.grpc.GenericEventRequest;
-import java.util.function.Function;
+import java.util.function.Supplier;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -16,17 +18,19 @@ public abstract class AbstractAgentListener implements Listener {
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAgentListener.class);
 
   protected final Plugin plugin;
+  protected final MapperRegistry mappers;
 
   private final GrpcClient grpcClient;
 
   protected AbstractAgentListener(Plugin plugin, GrpcClient grpcClient) {
     this.plugin = plugin;
     this.grpcClient = grpcClient;
+    this.mappers = new MapperRegistry();
   }
 
-  protected <T extends Event> void handleEvent(T event, Function<T, GameEvent> mapper) {
+  protected <T extends Event> void handleEvent(T event, Supplier<GameEvent> eventSupplier) {
     try {
-      GameEvent commonEvent = mapper.apply(event);
+      GameEvent commonEvent = eventSupplier.get();
       GenericEventRequest request = EventProtoConverter.toProto(commonEvent);
 
       plugin
@@ -44,5 +48,9 @@ public abstract class AbstractAgentListener implements Listener {
     } catch (Exception ex) {
       LOGGER.error("Failed to map event {}: {}", event.getEventName(), ex.getMessage());
     }
+  }
+
+  protected EventPropertiesBuilder propertyBuilder() {
+    return new EventPropertiesBuilder();
   }
 }

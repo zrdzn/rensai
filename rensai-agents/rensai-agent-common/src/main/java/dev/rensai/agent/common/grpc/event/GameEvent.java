@@ -1,7 +1,6 @@
-package dev.rensai.agent.common.grpc;
+package dev.rensai.agent.common.grpc.event;
 
 import java.time.Instant;
-import java.util.Map;
 
 public interface GameEvent {
 
@@ -11,5 +10,5 @@ public interface GameEvent {
 
   Instant getTimestamp();
 
-  Map<String, String> getProperties();
+  EventProperties getProperties();
 }

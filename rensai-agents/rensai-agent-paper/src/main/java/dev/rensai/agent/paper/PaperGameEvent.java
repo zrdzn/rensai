@@ -1,10 +1,10 @@
 package dev.rensai.agent.paper;
 
-import dev.rensai.agent.common.grpc.AbstractGameEvent;
-import java.util.Map;
+import dev.rensai.agent.common.grpc.event.AbstractGameEvent;
+import dev.rensai.agent.common.grpc.event.EventProperties;
 
 public class PaperGameEvent extends AbstractGameEvent {
-  public PaperGameEvent(String eventName, Map<String, String> properties) {
+  public PaperGameEvent(String eventName, EventProperties properties) {
     super(eventName, properties);
   }
 

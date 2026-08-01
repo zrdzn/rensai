@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package rensai.grpc;
 
+import "google/protobuf/struct.proto";
+
 option java_package = "dev.rensai.grpc";
 option java_multiple_files = true;
 
@@ -13,7 +15,7 @@ message GenericEventRequest {
   string event_name = 1;
   string game_source = 2;
   int64 timestamp = 3;
-  map<string, string> event_data = 4;
+  google.protobuf.Struct properties = 4;
 }
 
 message EventResponse {
