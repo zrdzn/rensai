@@ -2,6 +2,7 @@ package dev.rensai.agent.paper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import dev.rensai.agent.paper.listener.EventAvailabilityScanner;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,8 @@ public class EventCoverageScannerTest {
             .filter(clazz -> !Modifier.isAbstract(clazz.getModifiers()))
             .collect(Collectors.toSet());
 
-    List<String> implementedEvents = EventAvailabilityScanner.scanImplementedEvents();
+    List<String> implementedEvents =
+        EventAvailabilityScanner.scanImplementedEvents(RensaiAgentPlugin.LISTENER_PACKAGE_NAME);
 
     List<String> missingEvents =
         allEventClasses.stream()

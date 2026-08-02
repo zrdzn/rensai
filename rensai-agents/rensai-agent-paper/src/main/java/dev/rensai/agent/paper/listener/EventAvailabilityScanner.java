@@ -1,4 +1,4 @@
-package dev.rensai.agent.paper;
+package dev.rensai.agent.paper.listener;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -11,12 +11,10 @@ import org.reflections.scanners.Scanners;
 
 public final class EventAvailabilityScanner {
 
-  private static final String PACKAGE_NAME = "dev.rensai.agent.paper.listener";
-
   private EventAvailabilityScanner() {}
 
-  public static List<String> scanImplementedEvents() {
-    Reflections agentReflections = new Reflections(PACKAGE_NAME, Scanners.MethodsAnnotated);
+  public static List<String> scanImplementedEvents(String packageName) {
+    Reflections agentReflections = new Reflections(packageName, Scanners.MethodsAnnotated);
     Set<Method> handlerMethods = agentReflections.getMethodsAnnotatedWith(EventHandler.class);
 
     return handlerMethods.stream()
