@@ -2,10 +2,8 @@ package dev.rensai.agent.paper.listener;
 
 import dev.rensai.agent.common.grpc.GrpcClient;
 import dev.rensai.agent.common.grpc.event.EventPropertiesBuilder;
-import dev.rensai.agent.common.grpc.event.EventProtoConverter;
-import dev.rensai.agent.common.grpc.event.GameEvent;
+import dev.rensai.agent.common.grpc.event.game.GameEvent;
 import dev.rensai.agent.paper.mapper.MapperRegistry;
-import dev.rensai.grpc.GenericEventRequest;
 import java.util.function.Supplier;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
@@ -30,8 +28,7 @@ public abstract class AbstractAgentListener implements Listener {
 
   protected <T extends Event> void handleEvent(T event, Supplier<GameEvent> eventSupplier) {
     try {
-      GameEvent commonEvent = eventSupplier.get();
-      GenericEventRequest request = EventProtoConverter.toProto(commonEvent);
+      GameEvent gameEvent = eventSupplier.get();
 
       plugin
           .getServer()
@@ -40,7 +37,7 @@ public abstract class AbstractAgentListener implements Listener {
               plugin,
               _ -> {
                 try {
-                  grpcClient.sendGenericEvent(request);
+                  grpcClient.sendGenericEvent(gameEvent);
                 } catch (Exception ex) {
                   LOGGER.error("Failed to dispatch gRPC event: {}", ex.getMessage());
                 }

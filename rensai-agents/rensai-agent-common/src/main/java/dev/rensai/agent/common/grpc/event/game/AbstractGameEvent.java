@@ -1,5 +1,6 @@
-package dev.rensai.agent.common.grpc.event;
+package dev.rensai.agent.common.grpc.event.game;
 
+import dev.rensai.agent.common.grpc.event.EventProperties;
 import dev.rensai.common.CommonConstants;
 import java.time.Instant;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import {
     ReactFlow,
     ReactFlowProvider,
@@ -19,7 +19,7 @@ import {
     Handle
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Server, Zap, HelpCircle, Puzzle } from 'lucide-react';
+import { Server, Zap, HelpCircle, Puzzle, Plus, Trash2 } from 'lucide-react';
 
 let id = 0;
 const getId = () => `node_${id++}`;
@@ -33,7 +33,7 @@ const AgentNode = memo(({ id, data, isConnectable }: any) => {
                 Agent
             </div>
             <select
-                className="w-full text-sm border border-gray-300 bg-gray-50 p-2 rounded-md outline-none focus:border-blue-500"
+                className="w-full text-sm border border-gray-300 bg-gray-50 p-2 rounded-md outline-none focus:border-blue-500 nodrag"
                 value={data.selectedAgent || ""}
                 onChange={(e) => updateNodeData(id, { selectedAgent: e.target.value })}
             >
@@ -57,7 +57,7 @@ const EventNode = memo(({ id, data, isConnectable }: any) => {
                 Event
             </div>
             <select
-                className="w-full text-sm border border-gray-300 bg-gray-50 p-2 rounded-md outline-none focus:border-yellow-500"
+                className="w-full text-sm border border-gray-300 bg-gray-50 p-2 rounded-md outline-none focus:border-yellow-500 nodrag"
                 value={data.selectedEvent || ""}
                 onChange={(e) => updateNodeData(id, { selectedEvent: e.target.value })}
             >
@@ -74,20 +74,102 @@ EventNode.displayName = "EventNode";
 
 const ConditionNode = memo(({ id, data, isConnectable }: any) => {
     const { updateNodeData } = useReactFlow();
+    const conditions = data.conditions || [];
+
+    const addCondition = () => {
+        updateNodeData(id, {
+            conditions: [...conditions, { property: 'eventName', operator: 'Equals', value: '' }]
+        });
+    };
+
+    const updateCondition = (index: number, field: string, value: string) => {
+        const newConditions = [...conditions];
+        newConditions[index] = { ...newConditions[index], [field]: value };
+        updateNodeData(id, { conditions: newConditions });
+    };
+
+    const removeCondition = (index: number) => {
+        const newConditions = conditions.filter((_: any, i: number) => i !== index);
+        updateNodeData(id, { conditions: newConditions });
+    };
+
     return (
-        <div className="bg-white border-2 border-purple-200 rounded-lg p-4 w-56 shadow-sm">
+        <div className="bg-white border-2 border-purple-200 rounded-lg p-4 w-72 shadow-sm">
             <Handle type="target" position={Position.Left} isConnectable={isConnectable} className="w-3 h-3 bg-purple-500" />
-            <div className="flex items-center gap-2 font-bold text-sm text-purple-700 mb-3">
-                <HelpCircle className="w-4 h-4" />
-                Condition
+            <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2 font-bold text-sm text-purple-700">
+                    <HelpCircle className="w-4 h-4" />
+                    Condition
+                </div>
             </div>
-            <input
-                type="text"
-                placeholder="e.g. event.hasItem()"
-                className="w-full text-sm border border-gray-300 bg-gray-50 p-2 rounded-md outline-none focus:border-purple-500"
-                value={data.conditionValue || ""}
-                onChange={(e) => updateNodeData(id, { conditionValue: e.target.value })}
-            />
+
+            <div className="space-y-2 mb-3">
+                {conditions.map((cond: any, index: number) => (
+                    <div key={index} className="flex gap-2 items-start border border-purple-100 bg-purple-50 p-2 rounded-md">
+                        <div className="flex-1 space-y-2">
+                            <select
+                                className="w-full text-xs border border-gray-300 bg-white p-1.5 rounded outline-none focus:border-purple-500 nodrag"
+                                value={cond.property}
+                                onChange={(e) => updateCondition(index, 'property', e.target.value)}
+                            >
+                                <option value="eventName">getEventName()</option>
+                                <option value="gameSource">getGameSource()</option>
+                                <option value="timestamp">getTimestamp()</option>
+                                <option value="properties">getProperties() (Custom Key)</option>
+                            </select>
+
+                            {cond.property === 'properties' && (
+                                <input
+                                    type="text"
+                                    placeholder="Property Key (e.g. block_type)"
+                                    className="w-full text-xs border border-gray-300 bg-white p-1.5 rounded outline-none focus:border-purple-500 nodrag"
+                                    value={cond.customKey || ""}
+                                    onChange={(e) => updateCondition(index, 'customKey', e.target.value)}
+                                />
+                            )}
+
+                            <select
+                                className="w-full text-xs border border-gray-300 bg-white p-1.5 rounded outline-none focus:border-purple-500 nodrag"
+                                value={cond.operator}
+                                onChange={(e) => updateCondition(index, 'operator', e.target.value)}
+                            >
+                                <option value="Equals">Equals</option>
+                                <option value="LessThan">Less Than</option>
+                                <option value="MoreThan">More Than</option>
+                                <option value="IsTrue">Is True</option>
+                                <option value="IsFalse">Is False</option>
+                            </select>
+
+                            {!['IsTrue', 'IsFalse'].includes(cond.operator) && (
+                                <input
+                                    type="text"
+                                    placeholder="Value"
+                                    className="w-full text-xs border border-gray-300 bg-white p-1.5 rounded outline-none focus:border-purple-500 nodrag"
+                                    value={cond.value || ""}
+                                    onChange={(e) => updateCondition(index, 'value', e.target.value)}
+                                />
+                            )}
+                        </div>
+                        <button
+                            onClick={() => removeCondition(index)}
+                            className="text-gray-400 hover:text-red-600 p-1 nodrag"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
+                    </div>
+                ))}
+                {conditions.length === 0 && (
+                    <div className="text-xs text-gray-500 text-center py-2">No conditions set.</div>
+                )}
+            </div>
+
+            <button
+                onClick={addCondition}
+                className="w-full flex items-center justify-center gap-1 bg-purple-100 text-purple-700 py-1.5 rounded-md text-xs font-semibold hover:bg-purple-200 transition-colors nodrag"
+            >
+                <Plus className="w-3 h-3" /> Add Condition
+            </button>
+
             <Handle type="source" position={Position.Right} isConnectable={isConnectable} className="w-3 h-3 bg-purple-500" />
         </div>
     );
@@ -105,7 +187,7 @@ const IntegrationNode = memo(({ id, data, isConnectable }: any) => {
             </div>
             <div className="space-y-2">
                 <select
-                    className="w-full text-sm border border-gray-300 bg-gray-50 p-2 rounded-md outline-none focus:border-indigo-500"
+                    className="w-full text-sm border border-gray-300 bg-gray-50 p-2 rounded-md outline-none focus:border-indigo-500 nodrag"
                     value={data.selectedIntegration || ""}
                     onChange={(e) => updateNodeData(id, { selectedIntegration: e.target.value })}
                 >
@@ -115,7 +197,7 @@ const IntegrationNode = memo(({ id, data, isConnectable }: any) => {
                     <option value="mail">Mail</option>
                 </select>
                 <select
-                    className="w-full text-sm border border-gray-300 bg-gray-50 p-2 rounded-md outline-none focus:border-indigo-500"
+                    className="w-full text-sm border border-gray-300 bg-gray-50 p-2 rounded-md outline-none focus:border-indigo-500 nodrag"
                     value={data.selectedAction || ""}
                     onChange={(e) => updateNodeData(id, { selectedAction: e.target.value })}
                 >

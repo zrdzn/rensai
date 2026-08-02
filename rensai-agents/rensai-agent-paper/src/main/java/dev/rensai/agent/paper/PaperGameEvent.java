@@ -1,7 +1,7 @@
 package dev.rensai.agent.paper;
 
-import dev.rensai.agent.common.grpc.event.AbstractGameEvent;
 import dev.rensai.agent.common.grpc.event.EventProperties;
+import dev.rensai.agent.common.grpc.event.game.AbstractGameEvent;
 
 public class PaperGameEvent extends AbstractGameEvent {
   public PaperGameEvent(String eventName, EventProperties properties) {

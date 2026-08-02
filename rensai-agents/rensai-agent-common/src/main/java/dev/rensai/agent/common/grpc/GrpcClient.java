@@ -1,8 +1,9 @@
 package dev.rensai.agent.common.grpc;
 
-import dev.rensai.grpc.EventResponse;
-import dev.rensai.grpc.GenericEventRequest;
-import dev.rensai.grpc.IngestionServiceGrpc;
+import dev.rensai.agent.common.grpc.event.EventProtoConverter;
+import dev.rensai.agent.common.grpc.event.SupportedEvents;
+import dev.rensai.agent.common.grpc.event.game.GameEvent;
+import dev.rensai.grpc.*;
 import io.grpc.ManagedChannel;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -20,12 +21,33 @@ public class GrpcClient {
     this.asyncStub = asyncStub;
   }
 
-  public void sendGenericEvent(GenericEventRequest request) {
+  public void sendGenericEvent(GameEvent gameEvent) {
     asyncStub.sendGenericEvent(
-        request,
+        EventProtoConverter.toProto(gameEvent),
         new io.grpc.stub.StreamObserver<>() {
           @Override
           public void onNext(EventResponse response) {
+            // noop
+          }
+
+          @Override
+          public void onError(Throwable t) {
+            LOGGER.error("Failed to send gRPC event: {}", t.getMessage());
+          }
+
+          @Override
+          public void onCompleted() {
+            // noop
+          }
+        });
+  }
+
+  public void reportSupportedEvents(SupportedEvents supportedEvents) {
+    asyncStub.reportSupportedEvents(
+        EventProtoConverter.toProto(supportedEvents),
+        new io.grpc.stub.StreamObserver<>() {
+          @Override
+          public void onNext(SupportedEventsResponse response) {
             // noop
           }
 

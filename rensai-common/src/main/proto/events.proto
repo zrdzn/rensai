@@ -9,6 +9,7 @@ option java_multiple_files = true;
 
 service IngestionService {
   rpc SendGenericEvent (GenericEventRequest) returns (EventResponse);
+  rpc ReportSupportedEvents (SupportedEventsRequest) returns (SupportedEventsResponse);
 }
 
 message GenericEventRequest {
@@ -19,5 +20,15 @@ message GenericEventRequest {
 }
 
 message EventResponse {
+  bool success = 1;
+}
+
+message SupportedEventsRequest {
+  string agent_id = 1;
+  string agent_type = 2;
+  repeated string event_names = 3;
+}
+
+message SupportedEventsResponse {
   bool success = 1;
 }
