@@ -20,8 +20,13 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
 
-      - run: mvn test -Dtest=EventCoverageScannerTest -pl :rensai-agent-paper -am -DfailIfNoTests=false
+      - name: Build and cache dependencies
+        run: mvn install -DskipTests -pl :rensai-agent-paper -am
 
-      - env:
+      - name: Run event coverage test
+        run: mvn test -Dtest=EventCoverageScannerTest -pl :rensai-agent-paper
+
+      - name: Update GitHub Issue
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh issue edit 5 --body-file event-coverage-report.md
