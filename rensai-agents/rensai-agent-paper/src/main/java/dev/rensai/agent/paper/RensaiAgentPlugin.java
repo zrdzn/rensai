@@ -6,7 +6,6 @@ import dev.rensai.agent.common.grpc.GrpcConfiguration;
 import dev.rensai.agent.common.grpc.event.SupportedEvents;
 import dev.rensai.agent.paper.listener.EventAvailabilityScanner;
 import dev.rensai.agent.paper.listener.ListenerRegistry;
-import dev.rensai.agent.paper.listener.block.BlockBreakListener;
 import java.util.List;
 import org.bukkit.plugin.java.JavaPlugin;
 
