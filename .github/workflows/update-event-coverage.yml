@@ -3,7 +3,7 @@ name: Update Event Coverage Issue
 on:
   push:
     branches:
-      - master
+      - main
 
 permissions:
   issues: write
