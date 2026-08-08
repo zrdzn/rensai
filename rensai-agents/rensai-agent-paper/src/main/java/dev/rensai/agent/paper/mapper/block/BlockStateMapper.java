@@ -1,5 +1,7 @@
-package dev.rensai.agent.paper.mapper;
+package dev.rensai.agent.paper.mapper.block;
 
+import dev.rensai.agent.paper.mapper.Mapper;
+import dev.rensai.agent.paper.mapper.MapperConstants;
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.World;
