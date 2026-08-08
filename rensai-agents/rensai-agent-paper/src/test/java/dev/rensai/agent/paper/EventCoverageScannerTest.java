@@ -1,7 +1,10 @@
 package dev.rensai.agent.paper;
 
 import dev.rensai.agent.paper.listener.EventAvailabilityScanner;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,7 +15,7 @@ import org.reflections.Reflections;
 public class EventCoverageScannerTest {
 
   @Test
-  public void generateMissingEventsReport() {
+  public void generateMissingEventsReport() throws IOException {
     Reflections paperReflections = new Reflections("org.bukkit.event", "io.papermc.paper.event");
 
     Set<Class<? extends Event>> allEventClasses =
@@ -30,11 +33,13 @@ public class EventCoverageScannerTest {
             .sorted()
             .toList();
 
-    System.out.println("Implemented events (" + implementedEvents.size() + "):");
-    implementedEvents.forEach(System.out::println);
+    StringBuilder report = new StringBuilder();
+    report.append("## Implemented Events (").append(implementedEvents.size()).append(")\n");
+    implementedEvents.forEach(e -> report.append("- ").append(e).append("\n"));
 
-    System.out.println();
-    System.out.println("Missing implemented events (" + missingEvents.size() + "):");
-    missingEvents.forEach(System.out::println);
+    report.append("\n## Missing Events (").append(missingEvents.size()).append(")\n");
+    missingEvents.forEach(e -> report.append("- ").append(e).append("\n"));
+
+    Files.writeString(Path.of("event-coverage-report.md"), report.toString());
   }
 }
