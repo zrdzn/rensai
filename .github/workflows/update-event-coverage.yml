@@ -20,7 +20,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
 
-      - run: mvn test -Dtest=EventCoverageScannerTest
+      - run: mvn test -Dtest=EventCoverageScannerTest -pl rensai-agent-paper
 
       - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
