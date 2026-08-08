@@ -21,7 +21,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build and cache dependencies
-        run: mvn install -DskipTests -pl :rensai-agent-paper -am
+        run: mvn install -DskipTests -Dspotless.check.skip=true -pl :rensai-agent-paper -am
 
       - name: Run event coverage test
         run: mvn test -Dtest=EventCoverageScannerTest -pl :rensai-agent-paper
