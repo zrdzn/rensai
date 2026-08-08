@@ -29,4 +29,4 @@ jobs:
       - name: Update GitHub Issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh issue edit 5 --body-file event-coverage-report.md
+        run: gh issue edit 5 --body-file rensai-agents/rensai-agent-paper/event-coverage-report.md
